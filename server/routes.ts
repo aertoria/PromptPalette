@@ -60,6 +60,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  apiRouter.patch("/categories/:id", validateRequest(categoryValidationSchema.partial()), async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
+      
+      const updatedCategory = await storage.updateCategory(id, req.body);
+      if (!updatedCategory) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      
+      res.json(updatedCategory);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update category" });
+    }
+  });
+  
   apiRouter.delete("/categories/:id", async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {

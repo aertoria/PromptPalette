@@ -10,6 +10,7 @@ export interface IStorage {
   getAllCategories(): Promise<Category[]>;
   getCategoryById(id: number): Promise<Category | undefined>;
   createCategory(data: InsertCategory): Promise<Category>;
+  updateCategory(id: number, data: Partial<InsertCategory>): Promise<Category | undefined>;
   deleteCategory(id: number): Promise<boolean>;
   
   // Prompts
@@ -188,6 +189,19 @@ export class MemStorage implements IStorage {
     const category: Category = { id, ...data };
     this.categoriesStore.set(id, category);
     return category;
+  }
+  
+  async updateCategory(id: number, data: Partial<InsertCategory>): Promise<Category | undefined> {
+    const existingCategory = this.categoriesStore.get(id);
+    if (!existingCategory) return undefined;
+    
+    const updatedCategory: Category = {
+      ...existingCategory,
+      name: data.name ?? existingCategory.name,
+    };
+    
+    this.categoriesStore.set(id, updatedCategory);
+    return updatedCategory;
   }
   
   async deleteCategory(id: number): Promise<boolean> {
