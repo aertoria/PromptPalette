@@ -64,7 +64,8 @@ export function DndContextProvider({ children }: DndProviderProps) {
     if (combinedPrompts.length === 0) return '';
     
     return combinedPrompts
-      .map((prompt) => prompt.content.trim())
+      .map((prompt) => (prompt.content ? prompt.content.trim() : ''))
+      .filter(content => content !== '') // Remove any empty content
       .join('\n\n');
   };
 
