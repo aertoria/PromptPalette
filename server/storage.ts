@@ -62,9 +62,17 @@ export class MemStorage implements IStorage {
   private initializeDefaults() {
     // Add default categories
     const categories = [
-      { name: "Creative Writing" },
-      { name: "Technical Documentation" },
-      { name: "Customer Support" }
+      // Domain Topics
+      { name: "Domain Topic: Business" },
+      { name: "Domain Topic: Education" },
+      { name: "Domain Topic: Technology" },
+      { name: "Domain Topic: Customer Support" },
+      
+      // Utilities
+      { name: "Utility: Connecting Prompts" },
+      { name: "Utility: Make Concise" },
+      { name: "Utility: Error Handling" },
+      { name: "Utility: Format Output" }
     ];
     
     categories.forEach(cat => this.createCategory(cat));
@@ -78,9 +86,14 @@ export class MemStorage implements IStorage {
     templates.forEach(template => this.createTemplate(template));
     
     // Add default prompts for Customer Support
-    const customerSupportId = 3; // Based on the default categories above
+    const customerSupportId = 4; // Based on the default categories above - "Domain Topic: Customer Support"
+    const connectingPromptsId = 5; // "Utility: Connecting Prompts"
+    const makeConciseId = 6; // "Utility: Make Concise"
+    const errorHandlingId = 7; // "Utility: Error Handling"
+    const formatOutputId = 8; // "Utility: Format Output"
     
     const prompts = [
+      // Customer Support Prompts
       { 
         title: "Initial Greeting", 
         content: "Hello, thank you for contacting our support team. How can I assist you today?", 
@@ -98,6 +111,62 @@ export class MemStorage implements IStorage {
         content: "I'll help resolve your issue as quickly as possible. Let me gather some information to better assist you.", 
         categoryId: customerSupportId,
         tags: ["Support"]
+      },
+      
+      // Connecting Prompts Utilities
+      {
+        title: "Context Transition",
+        content: "Based on the information above, let's now focus on [TOPIC].",
+        categoryId: connectingPromptsId,
+        tags: ["Transition"]
+      },
+      {
+        title: "Logical Bridge",
+        content: "To connect these ideas, consider the following relationship between [CONCEPT A] and [CONCEPT B].",
+        categoryId: connectingPromptsId,
+        tags: ["Connection"]
+      },
+      
+      // Make Concise Utilities
+      {
+        title: "Brevity Instruction",
+        content: "Express the above in the most concise way possible, focusing only on essential information.",
+        categoryId: makeConciseId,
+        tags: ["Brevity"]
+      },
+      {
+        title: "Bullet Point Format",
+        content: "Summarize the key points from above in a bullet point list with no more than 5 items.",
+        categoryId: makeConciseId,
+        tags: ["Format"]
+      },
+      
+      // Error Handling Utilities
+      {
+        title: "Clarification Request",
+        content: "If you encounter ambiguity or missing information, please indicate what specific details you need to proceed.",
+        categoryId: errorHandlingId,
+        tags: ["Clarification"]
+      },
+      {
+        title: "Fallback Response",
+        content: "If unable to complete the request as described, provide an explanation of limitations and suggest alternative approaches.",
+        categoryId: errorHandlingId,
+        tags: ["Fallback"]
+      },
+      
+      // Format Output Utilities
+      {
+        title: "JSON Structure",
+        content: "Format your response as a valid JSON object with the following structure: [STRUCTURE]",
+        categoryId: formatOutputId,
+        tags: ["JSON"]
+      },
+      {
+        title: "Markdown Formatting",
+        content: "Present your response using Markdown formatting. Use headers for sections, code blocks for examples, and bullet points for lists.",
+        categoryId: formatOutputId,
+        tags: ["Markdown"]
       }
     ];
     
@@ -142,10 +211,14 @@ export class MemStorage implements IStorage {
   async createPrompt(data: InsertPrompt): Promise<Prompt> {
     const id = this.promptIdCounter++;
     const now = new Date();
+    const tags = Array.isArray(data.tags) ? data.tags : [];
+    
     const prompt: Prompt = { 
       id, 
-      ...data,
-      tags: data.tags || [],
+      title: data.title,
+      content: data.content,
+      categoryId: data.categoryId ?? null, // Ensure it's not undefined
+      tags: tags,
       createdAt: now 
     };
     this.promptsStore.set(id, prompt);
@@ -156,10 +229,14 @@ export class MemStorage implements IStorage {
     const existingPrompt = this.promptsStore.get(id);
     if (!existingPrompt) return undefined;
     
+    const tags = Array.isArray(data.tags) ? data.tags : existingPrompt.tags;
+    
     const updatedPrompt: Prompt = {
       ...existingPrompt,
-      ...data,
-      tags: data.tags || existingPrompt.tags,
+      title: data.title ?? existingPrompt.title,
+      content: data.content ?? existingPrompt.content,
+      categoryId: data.categoryId ?? existingPrompt.categoryId,
+      tags: tags,
     };
     
     this.promptsStore.set(id, updatedPrompt);
@@ -182,9 +259,14 @@ export class MemStorage implements IStorage {
   async createPromptCombination(data: InsertPromptCombination): Promise<PromptCombination> {
     const id = this.promptCombinationIdCounter++;
     const now = new Date();
+    const promptIds = Array.isArray(data.promptIds) ? data.promptIds : [];
+    const order = Array.isArray(data.order) ? data.order : [];
+    
     const combination: PromptCombination = { 
       id, 
-      ...data,
+      name: data.name,
+      promptIds: promptIds,
+      order: order,
       createdAt: now 
     };
     this.promptCombinationsStore.set(id, combination);
@@ -195,11 +277,15 @@ export class MemStorage implements IStorage {
     const existingCombination = this.promptCombinationsStore.get(id);
     if (!existingCombination) return undefined;
     
+    const promptIds = Array.isArray(data.promptIds) ? data.promptIds : existingCombination.promptIds;
+    const order = Array.isArray(data.order) ? data.order : existingCombination.order;
+    
     const updatedCombination: PromptCombination = {
-      ...existingCombination,
-      ...data,
-      promptIds: data.promptIds || existingCombination.promptIds,
-      order: data.order || existingCombination.order,
+      id: existingCombination.id,
+      name: data.name ?? existingCombination.name,
+      createdAt: existingCombination.createdAt,
+      promptIds: promptIds,
+      order: order,
     };
     
     this.promptCombinationsStore.set(id, updatedCombination);

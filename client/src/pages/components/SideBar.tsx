@@ -5,7 +5,8 @@ import { Plus, Folder, FileText, Settings, X } from 'lucide-react';
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -44,13 +45,17 @@ export default function SideBar({
   });
 
   const categorySchema = z.object({
-    name: z.string().min(2, "Category name must be at least 2 characters")
+    name: z.string().min(2, "Category name must be at least 2 characters"),
+    categoryType: z.enum(["domain", "utility"], {
+      required_error: "Please select a category type",
+    })
   });
 
   const form = useForm<z.infer<typeof categorySchema>>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: ""
+      name: "",
+      categoryType: "domain"
     }
   });
 
@@ -64,13 +69,17 @@ export default function SideBar({
 
   const onSubmit = async (data: z.infer<typeof categorySchema>) => {
     try {
-      await apiRequest('POST', '/api/categories', data);
+      // Add the appropriate prefix based on category type
+      const prefix = data.categoryType === "domain" ? "Domain Topic: " : "Utility: ";
+      const categoryName = prefix + data.name;
+      
+      await apiRequest('POST', '/api/categories', { name: categoryName });
       queryClient.invalidateQueries({ queryKey: ['/api/categories'] });
       closeAddCategoryDialog();
       form.reset();
       toast({
         title: "Category created",
-        description: `Category "${data.name}" has been created successfully.`,
+        description: `Category "${categoryName}" has been created successfully.`,
       });
     } catch (error) {
       toast({
@@ -113,8 +122,9 @@ export default function SideBar({
           </div>
           
           <nav>
-            <div className="mb-4">
-              <h2 className="text-xs uppercase font-semibold text-gray-500 mb-2">Categories</h2>
+            {/* Domain Topics */}
+            <div className="mb-6">
+              <h2 className="text-xs uppercase font-semibold text-gray-500 mb-2">Domain Topics</h2>
               
               {isCategoriesLoading ? (
                 <div className="flex items-center justify-center py-4">
@@ -122,7 +132,8 @@ export default function SideBar({
                 </div>
               ) : (
                 <>
-                  {categoriesData?.map((category) => (
+                  {categoriesData?.filter(category => category.name.startsWith('Domain Topic:'))
+                    .map((category) => (
                     <div key={category.id} className="mb-3">
                       <div 
                         className={`flex items-center justify-between ${
@@ -134,7 +145,7 @@ export default function SideBar({
                       >
                         <div className="flex items-center">
                           <Folder className="h-4 w-4 mr-2" />
-                          <span>{category.name}</span>
+                          <span>{category.name.replace('Domain Topic: ', '')}</span>
                         </div>
                         <span 
                           className={`text-xs ${
@@ -148,16 +159,57 @@ export default function SideBar({
                       </div>
                     </div>
                   ))}
-                  
-                  <button 
-                    className="flex items-center text-sm text-gray-600 hover:text-primary mt-2"
-                    onClick={openAddCategoryDialog}
-                  >
-                    <Plus className="h-4 w-4 mr-1" />
-                    <span>Add Category</span>
-                  </button>
                 </>
               )}
+            </div>
+            
+            {/* Utilities */}
+            <div className="mb-6">
+              <h2 className="text-xs uppercase font-semibold text-gray-500 mb-2">Utilities</h2>
+              
+              {isCategoriesLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                </div>
+              ) : (
+                <>
+                  {categoriesData?.filter(category => category.name.startsWith('Utility:'))
+                    .map((category) => (
+                    <div key={category.id} className="mb-3">
+                      <div 
+                        className={`flex items-center justify-between ${
+                          currentCategoryId === category.id 
+                            ? 'text-primary font-medium' 
+                            : 'text-gray-700 hover:text-primary'
+                        } cursor-pointer py-1`}
+                        onClick={() => onCategorySelect(category.id)}
+                      >
+                        <div className="flex items-center">
+                          <Folder className="h-4 w-4 mr-2" />
+                          <span>{category.name.replace('Utility: ', '')}</span>
+                        </div>
+                        <span 
+                          className={`text-xs ${
+                            currentCategoryId === category.id 
+                              ? 'bg-primary/10 text-primary' 
+                              : 'text-gray-500 bg-gray-100'
+                          } px-2 py-0.5 rounded-full`}
+                        >
+                          {getCategoryCount(category.id)}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+              
+              <button 
+                className="flex items-center text-sm text-gray-600 hover:text-primary mt-4"
+                onClick={openAddCategoryDialog}
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                <span>Add Category</span>
+              </button>
             </div>
             
             <div className="mt-6">
@@ -205,6 +257,31 @@ export default function SideBar({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
+                name="categoryType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="domain">Domain Topic</SelectItem>
+                        <SelectItem value="utility">Utility</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
@@ -212,6 +289,9 @@ export default function SideBar({
                     <FormControl>
                       <Input placeholder="Enter category name" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Enter the name without the prefix. The appropriate "Domain Topic:" or "Utility:" prefix will be added automatically.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

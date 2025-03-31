@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Prompt, Category } from '@shared/schema';
 
 export default function Home() {
-  const [currentCategoryId, setCurrentCategoryId] = useState<number | null>(3); // Default to Customer Support
+  const [currentCategoryId, setCurrentCategoryId] = useState<number | null>(4); // Default to Domain Topic: Customer Support
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingPrompt, setEditingPrompt] = useState<Prompt | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
