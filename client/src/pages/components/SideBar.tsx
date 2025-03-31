@@ -114,7 +114,7 @@ export default function SideBar({
               </div>
               <h1 className="text-xl font-bold">ContextManager</h1>
             </div>
-            <p className="text-xs text-gray-500 ml-9 mt-1">powered by Dittos @ Labs</p>
+            <p className="text-xs text-gray-500 ml-9 mt-1">powered by Ditto</p>
           </div>
           
           <div className="mb-6">
