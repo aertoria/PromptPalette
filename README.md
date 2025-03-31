@@ -47,6 +47,16 @@ ContextManager is a web application designed to streamline AI prompt creation, m
 
    This will start both the backend and frontend servers. The application will be available at http://localhost:5000.
 
+   If you encounter a port error, you can try:
+   - Using a different port by setting the PORT environment variable:
+     ```bash
+     PORT=3000 npm run dev
+     ```
+   - Or checking if a port is already in use:
+     ```bash
+     lsof -i :3000
+     ```
+
 ### Deploying to Production
 
 1. **On Replit**
@@ -123,7 +133,12 @@ ContextManager is a web application designed to streamline AI prompt creation, m
   - Refreshing the browser
   - Restarting the development server
   - Clearing your browser cache
-  - Checking the console for error messages
+  - Checking the browser console for error messages
+  - If you get a port error (EADDRINUSE), try:
+    - Using a different port: `PORT=3000 npm run dev`
+    - Checking if the port is in use: `lsof -i :3000`
+    - Killing the process using the port: `kill -9 <PID>`
+    - Or simply use a different port number (3000, 8000, 8080, etc.)
 
 ### Known Issues and Fixes
 
