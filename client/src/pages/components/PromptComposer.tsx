@@ -121,6 +121,9 @@ export default function PromptComposer() {
   };
   
   const handleSendToGemini = () => {
+    // Copy the combined content to clipboard first
+    navigator.clipboard.writeText(combinedContent);
+    
     // The URL for Gemini with the prompt in the search parameter
     const geminiUrl = `https://gemini.google.com/app?text=${encodeURIComponent(combinedContent)}`;
     
@@ -129,7 +132,7 @@ export default function PromptComposer() {
     
     toast({
       title: "Sent to Gemini",
-      description: "The combined prompt has been sent to Gemini in a new tab."
+      description: "The combined prompt has been copied to clipboard and sent to Gemini in a new tab."
     });
   };
   
