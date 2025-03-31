@@ -122,7 +122,10 @@ export default function DraggablePromptItem({
             variant="outline"
             size="icon"
             className="p-1 text-gray-400 hover:text-gray-600 mb-1 bg-white rounded-full shadow-sm h-auto w-auto"
-            onClick={handleMoveUp}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleMoveUp();
+            }}
             disabled={index === 0}
           >
             <ArrowUp className="h-3 w-3" />
@@ -131,14 +134,21 @@ export default function DraggablePromptItem({
             variant="outline"
             size="icon"
             className="p-1 text-gray-400 hover:text-gray-600 bg-white rounded-full shadow-sm h-auto w-auto"
-            onClick={handleMoveDown}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleMoveDown();
+            }}
             disabled={isLast}
           >
             <ArrowDown className="h-3 w-3" />
           </Button>
         </div>
         
-        <div className="bg-white border border-gray-200 rounded-lg mb-4 shadow-sm">
+        {/* Made entire card draggable */}
+        <div 
+          ref={drag} 
+          className="bg-white border border-gray-200 rounded-lg mb-4 shadow-sm cursor-grab"
+        >
           <div className="p-4">
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-medium flex items-center">
@@ -153,7 +163,10 @@ export default function DraggablePromptItem({
                     variant="ghost"
                     size="sm"
                     className="text-gray-400 hover:text-primary p-1 opacity-0 group-hover:opacity-100 transition h-auto"
-                    onClick={onEdit}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent drag when clicking edit button
+                      if (onEdit) onEdit();
+                    }}
                     title="Edit"
                   >
                     <Edit className="h-4 w-4" />
@@ -163,7 +176,10 @@ export default function DraggablePromptItem({
                   variant="ghost"
                   size="sm"
                   className="text-gray-400 hover:text-destructive p-1 opacity-0 group-hover:opacity-100 transition h-auto"
-                  onClick={() => removePrompt(prompt.id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent drag when clicking remove button
+                    removePrompt(prompt.id);
+                  }}
                   title="Remove"
                 >
                   <X className="h-4 w-4" />
@@ -183,7 +199,10 @@ export default function DraggablePromptItem({
                       variant="ghost" 
                       size="sm" 
                       className="text-xs text-primary hover:text-primary/80 p-0 h-auto"
-                      onClick={showFullContent}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent drag when clicking button
+                        showFullContent();
+                      }}
                     >
                       Show full content
                     </Button>

@@ -21,7 +21,7 @@ export default function PromptCard({ prompt, onEdit }: PromptCardProps) {
 
   return (
     <div
-      ref={dragPreview}
+      ref={drag} // Changed from dragPreview to drag to make the entire card draggable
       className={`bg-white border border-gray-200 rounded-lg mb-3 hover:shadow-md transition ${
         isDragging ? 'opacity-60' : ''
       }`}
@@ -35,13 +35,15 @@ export default function PromptCard({ prompt, onEdit }: PromptCardProps) {
               variant="ghost"
               size="sm"
               className="text-gray-400 hover:text-primary p-1 h-auto"
-              onClick={onEdit}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent drag when clicking edit button
+                onEdit();
+              }}
               title="Edit"
             >
               <Edit className="h-4 w-4" />
             </Button>
             <div
-              ref={drag}
               className="text-gray-400 hover:text-gray-600 p-1 rounded cursor-grab"
             >
               <GripVertical className="h-4 w-4" />
