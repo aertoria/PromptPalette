@@ -2,7 +2,7 @@ import { useDrop } from 'react-dnd';
 import { ItemTypes, DragItem } from '@/lib/types';
 import { useDndContext } from '@/lib/dndContext';
 import DraggablePromptItem from './DraggablePromptItem';
-import { Plus, RotateCcw, Save, Send } from 'lucide-react';
+import { Plus, RotateCcw, Save, Send, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
@@ -120,6 +120,19 @@ export default function PromptComposer() {
     });
   };
   
+  const handleSendToGemini = () => {
+    // The URL for Gemini with the prompt in the search parameter
+    const geminiUrl = `https://gemini.google.com/app?text=${encodeURIComponent(combinedContent)}`;
+    
+    // Open Gemini in a new tab with the combined prompt
+    window.open(geminiUrl, '_blank');
+    
+    toast({
+      title: "Sent to Gemini",
+      description: "The combined prompt has been sent to Gemini in a new tab."
+    });
+  };
+  
   return (
     <div className="flex-1 bg-gray-50 p-6 overflow-y-auto">
       <div className="mb-4">
@@ -215,12 +228,21 @@ export default function PromptComposer() {
             Save
           </Button>
           <Button
-            className="bg-primary text-white"
+            variant="outline"
+            className="text-gray-700"
             onClick={handleExport}
             disabled={combinedPrompts.length === 0}
           >
             <Send className="mr-2 h-4 w-4" />
             Export
+          </Button>
+          <Button
+            className="bg-blue-600 text-white hover:bg-blue-700"
+            onClick={handleSendToGemini}
+            disabled={combinedPrompts.length === 0}
+          >
+            <Zap className="mr-2 h-4 w-4" />
+            Send to Gemini
           </Button>
         </div>
       </div>
