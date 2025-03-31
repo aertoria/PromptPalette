@@ -102,7 +102,7 @@ export default function SideBar({
             <div className="bg-gradient-to-r from-primary to-secondary rounded-lg p-2">
               <span className="text-white">✨</span>
             </div>
-            <h1 className="text-xl font-bold">PromptCraft</h1>
+            <h1 className="text-xl font-bold">ContextManager</h1>
           </div>
           
           <div className="mb-6">
