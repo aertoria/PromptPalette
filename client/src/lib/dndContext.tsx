@@ -61,7 +61,11 @@ export function DndContextProvider({ children }: DndProviderProps) {
   };
 
   const getCombinedContent = () => {
-    return combinedPrompts.map((prompt) => prompt.content).join(' ');
+    if (combinedPrompts.length === 0) return '';
+    
+    return combinedPrompts
+      .map((prompt) => prompt.content.trim())
+      .join('\n\n');
   };
 
   const saveCombination = async (name: string) => {

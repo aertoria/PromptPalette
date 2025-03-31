@@ -265,8 +265,8 @@ export class MemStorage implements IStorage {
     const combination: PromptCombination = { 
       id, 
       name: data.name,
-      promptIds: promptIds,
-      order: order,
+      promptIds: promptIds as number[],
+      order: order as number[],
       createdAt: now 
     };
     this.promptCombinationsStore.set(id, combination);
@@ -284,8 +284,8 @@ export class MemStorage implements IStorage {
       id: existingCombination.id,
       name: data.name ?? existingCombination.name,
       createdAt: existingCombination.createdAt,
-      promptIds: promptIds,
-      order: order,
+      promptIds: promptIds as number[],
+      order: order as number[],
     };
     
     this.promptCombinationsStore.set(id, updatedCombination);

@@ -1,10 +1,17 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { DraggablePromptItem as DraggablePromptItemType } from '@/lib/types';
 import { ItemTypes } from '@/lib/types';
 import { Edit, X, GripVertical, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDndContext } from '@/lib/dndContext';
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from '@/components/ui/dialog';
 
 interface DraggablePromptItemProps {
   prompt: DraggablePromptItemType;
@@ -21,6 +28,7 @@ export default function DraggablePromptItem({
 }: DraggablePromptItemProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { movePrompt, removePrompt } = useDndContext();
+  const [isContentDialogOpen, setIsContentDialogOpen] = useState(false);
   
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.PROMPT,
@@ -100,80 +108,134 @@ export default function DraggablePromptItem({
     }
   };
   
+  const showFullContent = () => {
+    setIsContentDialogOpen(true);
+  };
+  
   const opacity = isDragging ? 0.4 : 1;
   
   return (
-    <div ref={ref} className="relative group" style={{ opacity }}>
-      <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 flex flex-col items-center">
-        <Button
-          variant="outline"
-          size="icon"
-          className="p-1 text-gray-400 hover:text-gray-600 mb-1 bg-white rounded-full shadow-sm h-auto w-auto"
-          onClick={handleMoveUp}
-          disabled={index === 0}
-        >
-          <ArrowUp className="h-3 w-3" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          className="p-1 text-gray-400 hover:text-gray-600 bg-white rounded-full shadow-sm h-auto w-auto"
-          onClick={handleMoveDown}
-          disabled={isLast}
-        >
-          <ArrowDown className="h-3 w-3" />
-        </Button>
-      </div>
-      
-      <div className="bg-white border border-gray-200 rounded-lg mb-4 shadow-sm">
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-medium flex items-center">
-              <span>{prompt.title}</span>
-              <span className="ml-2 text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                Step {index + 1}
-              </span>
-            </h3>
-            <div className="flex items-center space-x-1">
-              {onEdit && (
+    <>
+      <div ref={ref} className="relative group" style={{ opacity }}>
+        <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 flex flex-col items-center">
+          <Button
+            variant="outline"
+            size="icon"
+            className="p-1 text-gray-400 hover:text-gray-600 mb-1 bg-white rounded-full shadow-sm h-auto w-auto"
+            onClick={handleMoveUp}
+            disabled={index === 0}
+          >
+            <ArrowUp className="h-3 w-3" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="p-1 text-gray-400 hover:text-gray-600 bg-white rounded-full shadow-sm h-auto w-auto"
+            onClick={handleMoveDown}
+            disabled={isLast}
+          >
+            <ArrowDown className="h-3 w-3" />
+          </Button>
+        </div>
+        
+        <div className="bg-white border border-gray-200 rounded-lg mb-4 shadow-sm">
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-medium flex items-center">
+                <span>{prompt.title}</span>
+                <span className="ml-2 text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                  Step {index + 1}
+                </span>
+              </h3>
+              <div className="flex items-center space-x-1">
+                {onEdit && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-400 hover:text-primary p-1 opacity-0 group-hover:opacity-100 transition h-auto"
+                    onClick={onEdit}
+                    title="Edit"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-gray-400 hover:text-primary p-1 opacity-0 group-hover:opacity-100 transition h-auto"
-                  onClick={onEdit}
-                  title="Edit"
+                  className="text-gray-400 hover:text-destructive p-1 opacity-0 group-hover:opacity-100 transition h-auto"
+                  onClick={() => removePrompt(prompt.id)}
+                  title="Remove"
                 >
-                  <Edit className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </Button>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-400 hover:text-destructive p-1 opacity-0 group-hover:opacity-100 transition h-auto"
-                onClick={() => removePrompt(prompt.id)}
-                title="Remove"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-              <div className="text-gray-400 hover:text-gray-600 p-1 rounded cursor-grab">
-                <GripVertical className="h-4 w-4" />
+                <div className="text-gray-400 hover:text-gray-600 p-1 rounded cursor-grab">
+                  <GripVertical className="h-4 w-4" />
+                </div>
               </div>
+            </div>
+            
+            <div className="text-sm text-gray-600 relative">
+              {prompt.content.length > 200 ? (
+                <>
+                  <p>{prompt.content.substring(0, 200)}...</p>
+                  <div className="mt-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-xs text-primary hover:text-primary/80 p-0 h-auto"
+                      onClick={showFullContent}
+                    >
+                      Show full content
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <p>{prompt.content}</p>
+              )}
             </div>
           </div>
           
-          <p className="text-sm text-gray-600">{prompt.content}</p>
+          {!isLast && (
+            <div className="h-8 flex justify-center">
+              <svg width="24" height="32" className="overflow-visible">
+                <path d="M12,0 L12,32" className="stroke-secondary stroke-2 stroke-dashed" 
+                  strokeDasharray="5,5" />
+                <circle cx="12" cy="28" r="4" fill="hsl(var(--secondary))" />
+              </svg>
+            </div>
+          )}
         </div>
-        
-        {!isLast && (
-          <div className="h-8 flex justify-center">
-            <svg width="24" height="32" className="overflow-visible">
-              <path d="M12,0 L12,32" className="stroke-secondary stroke-2 stroke-dashed" 
-                strokeDasharray="5,5" />
-              <circle cx="12" cy="28" r="4" fill="hsl(var(--secondary))" />
-            </svg>
-          </div>
-        )}
       </div>
-    </div>
+      
+      <Dialog open={isContentDialogOpen} onOpenChange={setIsContentDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{prompt.title}</DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[60vh] overflow-y-auto">
+            <pre className="text-sm text-gray-600 whitespace-pre-wrap break-words font-sans p-4 bg-gray-50 rounded-md">
+              {prompt.content}
+            </pre>
+          </div>
+          <DialogFooter>
+            <Button 
+              onClick={() => {
+                navigator.clipboard.writeText(prompt.content);
+                setIsContentDialogOpen(false);
+              }}
+            >
+              Copy & Close
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsContentDialogOpen(false)}
+              className="ml-2"
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

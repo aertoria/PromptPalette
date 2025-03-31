@@ -164,20 +164,27 @@ export default function PromptComposer() {
       {/* Combined Output Preview */}
       <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
         <h3 className="font-medium mb-3 flex items-center justify-between">
-          <span>Combined Output</span>
+          <div className="flex items-center">
+            <span>Combined Output</span>
+            {combinedContent && (
+              <span className="text-xs text-gray-500 ml-2">
+                ({combinedContent.length} characters)
+              </span>
+            )}
+          </div>
           <Button 
-            variant="primary" 
+            variant="default" 
             size="sm" 
-            className="text-xs"
+            className="text-xs bg-primary text-white hover:bg-primary/90"
             onClick={handleCopyAll}
             disabled={!combinedContent}
           >
             Copy All
           </Button>
         </h3>
-        <div className="bg-gray-50 p-4 rounded border border-gray-200">
+        <div className="bg-gray-50 p-4 rounded border border-gray-200 max-h-[300px] overflow-y-auto">
           {combinedContent ? (
-            <p className="text-sm text-gray-600">{combinedContent}</p>
+            <pre className="text-sm text-gray-600 whitespace-pre-wrap break-words font-sans">{combinedContent}</pre>
           ) : (
             <p className="text-sm text-gray-400 italic">No prompts added yet. Drag prompts from the library to start.</p>
           )}
