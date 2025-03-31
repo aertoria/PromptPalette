@@ -191,7 +191,7 @@ export default function DraggablePromptItem({
             </div>
             
             <div className="text-sm text-gray-600 relative">
-              {prompt.content.length > 200 ? (
+              {prompt.content && prompt.content.length > 200 ? (
                 <>
                   <p>{prompt.content.substring(0, 200)}...</p>
                   <div className="mt-2">
@@ -209,7 +209,7 @@ export default function DraggablePromptItem({
                   </div>
                 </>
               ) : (
-                <p>{prompt.content}</p>
+                <p>{prompt.content || 'No content available'}</p>
               )}
             </div>
           </div>
@@ -233,13 +233,15 @@ export default function DraggablePromptItem({
           </DialogHeader>
           <div className="max-h-[60vh] overflow-y-auto">
             <pre className="text-sm text-gray-600 whitespace-pre-wrap break-words font-sans p-4 bg-gray-50 rounded-md">
-              {prompt.content}
+              {prompt.content || 'No content available'}
             </pre>
           </div>
           <DialogFooter>
             <Button 
               onClick={() => {
-                navigator.clipboard.writeText(prompt.content);
+                if (prompt.content) {
+                  navigator.clipboard.writeText(prompt.content);
+                }
                 setIsContentDialogOpen(false);
               }}
             >
