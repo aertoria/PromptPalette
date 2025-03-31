@@ -64,8 +64,9 @@ export class MemStorage implements IStorage {
     // Add default categories
     const categories = [
       // Domain Topics
+      { name: "Domain Topic: Ditto Project" },
+      { name: "Domain Topic: Mariner Project" },
       { name: "Domain Topic: Business" },
-      { name: "Domain Topic: Education" },
       { name: "Domain Topic: Technology" },
       { name: "Domain Topic: Customer Support" },
       
@@ -86,14 +87,59 @@ export class MemStorage implements IStorage {
     
     templates.forEach(template => this.createTemplate(template));
     
-    // Add default prompts for Customer Support
-    const customerSupportId = 4; // Based on the default categories above - "Domain Topic: Customer Support"
-    const connectingPromptsId = 5; // "Utility: Connecting Prompts"
-    const makeConciseId = 6; // "Utility: Make Concise"
-    const errorHandlingId = 7; // "Utility: Error Handling"
-    const formatOutputId = 8; // "Utility: Format Output"
+    // Calculate IDs based on the updated category list
+    const dittoProjectId = 1; // "Domain Topic: Ditto Project"
+    const marinerProjectId = 2; // "Domain Topic: Mariner Project"
+    const customerSupportId = 5; // Based on the updated categories above - "Domain Topic: Customer Support"
+    const connectingPromptsId = 6; // "Utility: Connecting Prompts"
+    const makeConciseId = 7; // "Utility: Make Concise"
+    const errorHandlingId = 8; // "Utility: Error Handling"
+    const formatOutputId = 9; // "Utility: Format Output"
     
     const prompts = [
+      // Ditto Project Prompts
+      {
+        title: "Context about Ditto Proto call",
+        content: `service LabsDittoService {
+  // Checks connections to servers, and re-initializes backends if necessary.
+  rpc Warmup(WarmupRequest) returns (WarmupResponse) {
+    option deadline = 240.0;
+  }
+
+  // Returns a list of base models, and their availability.
+  rpc GetStatus(GetStatusRequest) returns (GetStatusResponse) {
+    option deadline = 120.0;
+  }
+
+  // Trains a LoRA SFT or DPO model based on examples in request.
+  rpc TrainModel(TrainModelRequest) returns (TrainModelResponse) {
+    // errors: INVALID_ARGUMENT, UNAVAILABLE
+    option deadline = 120.0;
+  }
+
+  // Deletes a user model from CNS and UserModels table.
+  rpc DeleteModel(DeleteModelRequest) returns (DeleteModelResponse) {
+    // errors: INVALID_ARGUMENT
+    option deadline = 120.0;
+  }
+
+  // Returns model response from base model or user model.
+  rpc Generate(GenerateRequest) returns (GenerateResponse) {
+    // errors: INVALID_ARGUMENT, UNAVAILABLE
+    option deadline = 120.0;
+  }
+}`,
+        categoryId: dittoProjectId,
+        tags: ["Protocol", "API"]
+      },
+
+      // Mariner Project Prompts
+      {
+        title: "Mariner VM Debugger Context",
+        content: "This prompt provides context about the Mariner VM debugger functionality and integration points.",
+        categoryId: marinerProjectId,
+        tags: ["VM", "Debugger"]
+      },
       // Customer Support Prompts
       { 
         title: "Initial Greeting", 
