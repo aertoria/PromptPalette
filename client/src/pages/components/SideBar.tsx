@@ -107,11 +107,14 @@ export default function SideBar({
             </button>
           )}
           
-          <div className="flex items-center space-x-2 mb-8">
-            <div className="bg-gradient-to-r from-primary to-secondary rounded-lg p-2">
-              <span className="text-white">✨</span>
+          <div className="mb-8">
+            <div className="flex items-center space-x-2">
+              <div className="bg-gradient-to-r from-primary to-secondary rounded-lg p-2">
+                <span className="text-white">✨</span>
+              </div>
+              <h1 className="text-xl font-bold">ContextManager</h1>
             </div>
-            <h1 className="text-xl font-bold">ContextManager</h1>
+            <p className="text-xs text-gray-500 ml-9 mt-1">powered by Dittos @ Labs</p>
           </div>
           
           <div className="mb-6">
