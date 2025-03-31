@@ -20,10 +20,12 @@ ContextManager is a web application designed to streamline AI prompt creation, m
 2. **Start the Application**
    - Click the "Run" button at the top of the Replit interface
    - This will start the application automatically using the pre-configured workflow
+   - If the application fails to start, try stopping and starting the workflow again
 
 3. **Access the Application**
    - The application will be available in the Webview panel on the right side
    - You can also click the "Open in new tab" button to open it in a full browser window
+   - If the Webview doesn't load, you can access the application through your Replit URL (e.g., https://contextmanager.yourusername.repl.co)
 
 ### Running Locally (outside Replit)
 
@@ -131,6 +133,10 @@ ContextManager is a web application designed to streamline AI prompt creation, m
   - All potentially unsafe operations (like clipboard copying) are protected with conditional checks
 
 - **Category Management**: When deleting a category, any prompts associated with it will become uncategorized rather than being deleted to prevent data loss.
+
+- **Port Configuration**: The server is configured to use the PORT environment variable if available, otherwise defaulting to port 5000.
+  - This ensures compatibility with different hosting environments including Replit
+  - If you encounter a "ENOTSUP: operation not supported on socket" error, try restarting the application
 
 ## License
 
