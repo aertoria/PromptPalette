@@ -211,7 +211,7 @@ export default function SideBar({
                 onClick={openAddCategoryDialog}
               >
                 <Plus className="h-4 w-4 mr-1" />
-                <span>Add Category</span>
+                <span>+ New Category</span>
               </button>
             </div>
             
