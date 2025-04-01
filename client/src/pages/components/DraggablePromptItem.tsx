@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { DraggablePromptItem as DraggablePromptItemType } from '@/lib/types';
 import { ItemTypes } from '@/lib/types';
-import { Edit, X, GripVertical, ArrowUp, ArrowDown } from 'lucide-react';
+import { Edit, X, GripVertical, ArrowUp, ArrowDown, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDndContext } from '@/lib/dndContext';
 import { 
@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogFooter
 } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
 interface DraggablePromptItemProps {
   prompt: DraggablePromptItemType;
@@ -29,6 +30,7 @@ export default function DraggablePromptItem({
   const ref = useRef<HTMLDivElement>(null);
   const { movePrompt, removePrompt } = useDndContext();
   const [isContentDialogOpen, setIsContentDialogOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.PROMPT,
@@ -118,6 +120,11 @@ export default function DraggablePromptItem({
     setIsContentDialogOpen(true);
   };
   
+  const toggleExpand = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent drag when clicking expand button
+    setIsExpanded(!isExpanded);
+  };
+  
   const opacity = isDragging ? 0.4 : 1;
   
   return (
@@ -170,7 +177,7 @@ export default function DraggablePromptItem({
                     size="sm"
                     className="text-gray-400 hover:text-primary p-1 opacity-0 group-hover:opacity-100 transition h-auto"
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent drag when clicking edit button
+                      e.stopPropagation();
                       if (onEdit) onEdit();
                     }}
                     title="Edit"
@@ -183,7 +190,7 @@ export default function DraggablePromptItem({
                   size="sm"
                   className="text-gray-400 hover:text-destructive p-1 opacity-0 group-hover:opacity-100 transition h-auto"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent drag when clicking remove button
+                    e.stopPropagation();
                     removePrompt(prompt.id);
                   }}
                   title="Remove"
@@ -197,25 +204,31 @@ export default function DraggablePromptItem({
             </div>
             
             <div className="text-sm text-gray-600 relative">
-              {prompt.content && prompt.content.length > 200 ? (
-                <>
-                  <p>{prompt.content.substring(0, 200)}...</p>
-                  <div className="mt-2">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="text-xs text-primary hover:text-primary/80 p-0 h-auto"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent drag when clicking button
-                        showFullContent();
-                      }}
-                    >
-                      Show full content
-                    </Button>
-                  </div>
-                </>
-              ) : (
+              <div className={cn(
+                "transition-all duration-300 ease-in-out",
+                isExpanded ? "max-h-[1000px]" : "max-h-[100px] overflow-hidden"
+              )}>
                 <p>{prompt.content || 'No content available'}</p>
+              </div>
+              {prompt.content && prompt.content.length > 100 && (
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs text-primary hover:text-primary/80 p-0 h-auto"
+                    onClick={toggleExpand}
+                  >
+                    {isExpanded ? (
+                      <span className="flex items-center">
+                        Show less <ChevronUp className="h-3 w-3 ml-1" />
+                      </span>
+                    ) : (
+                      <span className="flex items-center">
+                        Show more <ChevronDown className="h-3 w-3 ml-1" />
+                      </span>
+                    )}
+                  </Button>
+                </div>
               )}
             </div>
           </div>
