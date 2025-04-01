@@ -86,14 +86,12 @@ export default function DraggablePromptItem({
       // Time to actually perform the action
       movePrompt(dragIndex, hoverIndex);
       
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
+      // Update the index for the dragged item
       item.index = hoverIndex;
     },
   });
   
+  // Combine drag and drop refs
   drag(drop(ref));
   
   const handleMoveUp = () => {

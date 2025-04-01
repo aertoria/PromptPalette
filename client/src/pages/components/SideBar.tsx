@@ -183,9 +183,9 @@ export default function SideBar({
               <div className="bg-gradient-to-r from-primary to-secondary rounded-lg p-2">
                 <span className="text-white">✨</span>
               </div>
-              <h1 className="text-xl font-bold">ContextManager</h1>
+              <h1 className="text-xl font-bold">ContextComposer</h1>
             </div>
-            <p className="text-xs text-gray-500 ml-9 mt-1">powered by Ditto</p>
+            <p className="text-xs text-gray-500 ml-9 mt-1">powered by Labs</p>
           </div>
           
           <div className="mb-6">

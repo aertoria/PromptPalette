@@ -66,9 +66,6 @@ export class MemStorage implements IStorage {
       // Domain Topics
       { name: "Domain Topic: Ditto Project" },
       { name: "Domain Topic: Mariner Project" },
-      { name: "Domain Topic: Business" },
-      { name: "Domain Topic: Technology" },
-      { name: "Domain Topic: Customer Support" },
       
       // Utilities
       { name: "Utility: Connecting Prompts" },
@@ -90,11 +87,10 @@ export class MemStorage implements IStorage {
     // Calculate IDs based on the updated category list
     const dittoProjectId = 1; // "Domain Topic: Ditto Project"
     const marinerProjectId = 2; // "Domain Topic: Mariner Project"
-    const customerSupportId = 5; // Based on the updated categories above - "Domain Topic: Customer Support"
-    const connectingPromptsId = 6; // "Utility: Connecting Prompts"
-    const makeConciseId = 7; // "Utility: Make Concise"
-    const errorHandlingId = 8; // "Utility: Error Handling"
-    const formatOutputId = 9; // "Utility: Format Output"
+    const connectingPromptsId = 3; // "Utility: Connecting Prompts"
+    const makeConciseId = 4; // "Utility: Make Concise"
+    const errorHandlingId = 5; // "Utility: Error Handling"
+    const formatOutputId = 6; // "Utility: Format Output"
     
     const prompts = [
       // Ditto Project Prompts
@@ -140,25 +136,6 @@ export class MemStorage implements IStorage {
         categoryId: marinerProjectId,
         tags: ["VM", "Debugger"]
       },
-      // Customer Support Prompts
-      { 
-        title: "Initial Greeting", 
-        content: "Hello, thank you for contacting our support team. How can I assist you today?", 
-        categoryId: customerSupportId,
-        tags: ["Greeting"]
-      },
-      { 
-        title: "Product Question", 
-        content: "I understand you have a question about our product. Could you please provide more details about what you're looking for?", 
-        categoryId: customerSupportId,
-        tags: ["Question"]
-      },
-      { 
-        title: "Issue Resolution", 
-        content: "I'll help resolve your issue as quickly as possible. Let me gather some information to better assist you.", 
-        categoryId: customerSupportId,
-        tags: ["Support"]
-      },
       
       // Connecting Prompts Utilities
       {
@@ -172,6 +149,126 @@ export class MemStorage implements IStorage {
         content: "To connect these ideas, consider the following relationship between [CONCEPT A] and [CONCEPT B].",
         categoryId: connectingPromptsId,
         tags: ["Connection"]
+      },
+      {
+        title: "Context Setting",
+        content: "Below is context you should consider carefully:",
+        categoryId: connectingPromptsId,
+        tags: ["Context", "Introduction"]
+      },
+      {
+        title: "Background Information",
+        content: "Here's some important background:",
+        categoryId: connectingPromptsId,
+        tags: ["Context", "Background"]
+      },
+      {
+        title: "Careful Consideration",
+        content: "Consider the following information carefully:",
+        categoryId: connectingPromptsId,
+        tags: ["Context", "Attention"]
+      },
+      {
+        title: "Verification Warning",
+        content: "Make sure you carefully verify the details.",
+        categoryId: connectingPromptsId,
+        tags: ["Warning", "Verification"]
+      },
+      {
+        title: "Accuracy Emphasis",
+        content: "Pay special attention to accuracy and precision.",
+        categoryId: connectingPromptsId,
+        tags: ["Warning", "Accuracy"]
+      },
+      {
+        title: "Thorough Check",
+        content: "Check thoroughly before responding.",
+        categoryId: connectingPromptsId,
+        tags: ["Warning", "Thoroughness"]
+      },
+      {
+        title: "Clear Response",
+        content: "Respond clearly and concisely.",
+        categoryId: connectingPromptsId,
+        tags: ["Clarity", "Instructions"]
+      },
+      {
+        title: "Step-by-Step Response",
+        content: "Answer step-by-step.",
+        categoryId: connectingPromptsId,
+        tags: ["Structure", "Instructions"]
+      },
+      {
+        title: "Specific Response",
+        content: "Be as specific as possible.",
+        categoryId: connectingPromptsId,
+        tags: ["Clarity", "Specificity"]
+      },
+      {
+        title: "Logic Verification",
+        content: "Double-check your logic before finalizing your answer.",
+        categoryId: connectingPromptsId,
+        tags: ["Critical", "Verification"]
+      },
+      {
+        title: "No Assumptions",
+        content: "Avoid assumptions; rely strictly on provided context.",
+        categoryId: connectingPromptsId,
+        tags: ["Critical", "Accuracy"]
+      },
+      {
+        title: "Critical Evaluation",
+        content: "Evaluate the information carefully before you answer.",
+        categoryId: connectingPromptsId,
+        tags: ["Analysis", "Evaluation"]
+      },
+      {
+        title: "Comprehensive Analysis",
+        content: "Analyze critically and comprehensively.",
+        categoryId: connectingPromptsId,
+        tags: ["Analysis", "Comprehensiveness"]
+      },
+      {
+        title: "Code Review",
+        content: "Review the code carefully for any errors or improvements.",
+        categoryId: connectingPromptsId,
+        tags: ["Technical", "Review"]
+      },
+      {
+        title: "Solution Validation",
+        content: "Validate the solution thoroughly.",
+        categoryId: connectingPromptsId,
+        tags: ["Technical", "Validation"]
+      },
+      {
+        title: "Structured Response",
+        content: "Provide the answer structured into clear sections.",
+        categoryId: connectingPromptsId,
+        tags: ["Organization", "Structure"]
+      },
+      {
+        title: "List Organization",
+        content: "Include numbered or bulleted lists for clarity.",
+        categoryId: connectingPromptsId,
+        tags: ["Organization", "Lists"]
+      },
+      {
+        title: "Building Upon",
+        content: "Building upon the above…",
+        categoryId: connectingPromptsId,
+        tags: ["Connection", "Continuation"]
+      },
+      {
+        title: "Context Alignment",
+        content: "In line with the context provided…",
+        categoryId: connectingPromptsId,
+        tags: ["Connection", "Context"]
+      },
+      {
+        title: "Previous Details",
+        content: "Given the details shared earlier…",
+        categoryId: connectingPromptsId,
+        tags: ["Connection", "Reference"]
       },
       
       // Make Concise Utilities

@@ -42,17 +42,23 @@ export function DndContextProvider({ children }: DndProviderProps) {
 
   const movePrompt = (dragIndex: number, hoverIndex: number) => {
     setCombinedPrompts((prev) => {
+      // Create a new array to avoid mutating state directly
       const newPrompts = [...prev];
+      
+      // Get the dragged item
       const draggedItem = newPrompts[dragIndex];
       
-      // Remove the dragged item
+      // Remove the dragged item from its current position
       newPrompts.splice(dragIndex, 1);
       
-      // Insert it at the new position
+      // Insert the dragged item at the new position
       newPrompts.splice(hoverIndex, 0, draggedItem);
       
-      // Update indices
-      return newPrompts.map((prompt, idx) => ({ ...prompt, index: idx }));
+      // Update indices for all items
+      return newPrompts.map((prompt, idx) => ({
+        ...prompt,
+        index: idx
+      }));
     });
   };
 

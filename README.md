@@ -1,6 +1,6 @@
-# ContextManager
+# ContextComposer
 
-ContextManager is a web application designed to streamline AI prompt creation, management, and optimization through an intuitive, interactive interface. It enables users to create and organize prompts by categories, drag and drop them as needed, and combine different prompts for various use cases.
+ContextComposer is a web application designed to streamline AI prompt creation, management, and optimization through an intuitive, interactive interface. It enables users to create and organize prompts by categories, drag and drop them as needed, and combine different prompts for various use cases.
 
 ## Features
 
@@ -15,7 +15,7 @@ ContextManager is a web application designed to streamline AI prompt creation, m
 ### Running on Replit
 
 1. **Fork the Repl**
-   - Click the "Fork" button to create your own copy of the ContextManager
+   - Click the "Fork" button to create your own copy of the ContextComposer
 
 2. **Start the Application**
    - Click the "Run" button at the top of the Replit interface
@@ -25,14 +25,14 @@ ContextManager is a web application designed to streamline AI prompt creation, m
 3. **Access the Application**
    - The application will be available in the Webview panel on the right side
    - You can also click the "Open in new tab" button to open it in a full browser window
-   - If the Webview doesn't load, you can access the application through your Replit URL (e.g., https://contextmanager.yourusername.repl.co)
+   - If the Webview doesn't load, you can access the application through your Replit URL (e.g., https://contextcomposer.yourusername.repl.co)
 
 ### Running Locally (outside Replit)
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/contextmanager.git
-   cd contextmanager
+   git clone https://github.com/your-username/contextcomposer.git
+   cd contextcomposer
    ```
 
 2. **Install dependencies**
