@@ -49,25 +49,29 @@ export default function DraggablePromptItem({
       if (!ref.current) {
         return;
       }
-      const dragIndex = item.index;
-      const hoverIndex = index;
       
-      // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
+      // Safety check: make sure we have valid indices
+      const dragIndex = typeof item.index === 'number' ? item.index : -1;
+      const hoverIndex = typeof index === 'number' ? index : -1;
+      
+      // Skip if indices are invalid or the same
+      if (dragIndex === -1 || hoverIndex === -1 || dragIndex === hoverIndex) {
         return;
       }
       
       // Determine rectangle on screen
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      if (!hoverBoundingRect) return;
       
       // Get vertical middle
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       
       // Determine mouse position
       const clientOffset = monitor.getClientOffset();
+      if (!clientOffset) return;
       
       // Get pixels to the top
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
       
       // Only perform the move when the mouse has crossed half of the items height
       // When dragging downwards, only move when the cursor is below 50%
@@ -83,11 +87,15 @@ export default function DraggablePromptItem({
         return;
       }
       
-      // Time to actually perform the action
-      movePrompt(dragIndex, hoverIndex);
-      
-      // Update the index for the dragged item
-      item.index = hoverIndex;
+      try {
+        // Time to actually perform the action
+        movePrompt(dragIndex, hoverIndex);
+        
+        // Update the index for the dragged item
+        item.index = hoverIndex;
+      } catch (error) {
+        console.error("Error during drag operation:", error);
+      }
     },
   });
   

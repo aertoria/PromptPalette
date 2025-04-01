@@ -34,15 +34,56 @@ export default function PromptComposer() {
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.PROMPT,
     drop: (item: DragItem) => {
-      // Only add if it's coming from the library, not from rearranging
-      if (item.index === undefined) {
-        addPrompt(item.prompt);
+      try {
+        // Validate the drag item
+        if (!item || typeof item !== 'object') {
+          console.error("Invalid drag item:", item);
+          return { name: 'PromptComposer' };
+        }
         
+        // Only add if it's coming from the library, not from rearranging
+        if (item.index === undefined && item.prompt) {
+          // Validate the prompt object before adding
+          if (!item.prompt.id || typeof item.prompt.id !== 'number') {
+            console.error("Prompt has invalid ID:", item.prompt);
+            
+            toast({
+              title: "Error adding prompt",
+              description: "The prompt could not be added due to a data error.",
+              variant: "destructive"
+            });
+            
+            return { name: 'PromptComposer' };
+          }
+          
+          // Check if this prompt is already in the list
+          const isDuplicate = combinedPrompts.some(p => p.id === item.prompt.id);
+          if (isDuplicate) {
+            toast({
+              title: "Duplicate prompt",
+              description: "This prompt is already in your composition.",
+              variant: "destructive"
+            });
+            return { name: 'PromptComposer' };
+          }
+          
+          // Add the prompt if all checks pass
+          addPrompt(item.prompt);
+          
+          toast({
+            title: "Prompt added",
+            description: "The prompt has been added to your composition."
+          });
+        }
+      } catch (error) {
+        console.error("Error during drop operation:", error);
         toast({
-          title: "Prompt added",
-          description: "The prompt has been added to your composition."
+          title: "Error",
+          description: "Something went wrong while adding the prompt.",
+          variant: "destructive"
         });
       }
+      
       return { name: 'PromptComposer' };
     },
     collect: (monitor) => ({
